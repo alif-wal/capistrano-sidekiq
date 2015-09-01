@@ -9,6 +9,7 @@ namespace :load do
     set :sidekiq_role, -> { :app }
     set :sidekiq_processes, -> { 1 }
     set :sidekiq_options_per_process, -> { nil }
+    set :sidekiq_cmd, "sidekiq"
     # Rbenv and RVM integration
     set :rbenv_map_bins, fetch(:rbenv_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
     set :rvm_map_bins, fetch(:rvm_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
@@ -111,9 +112,9 @@ namespace :sidekiq do
     end
 
     if fetch(:start_sidekiq_in_background, fetch(:sidekiq_run_in_background))
-      background :bundle, :exec, :sidekiq, args.compact.join(' ')
+      background :bundle, :exec, fetch(:sidekiq_cmd), args.compact.join(' ')
     else
-      execute :bundle, :exec, :sidekiq, args.compact.join(' ')
+      execute :bundle, :exec, fetch(:sidekiq_cmd), args.compact.join(' ')
     end
   end
 
